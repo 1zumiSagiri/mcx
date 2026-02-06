@@ -316,12 +316,24 @@
 // Rendering helpers
 // -------------------------
 
+/// Insert a hidden version marker into the PDF for Python splitting.
+/// - `output` (string): output type string, e.g., "exam", "answers".
+/// - `version` (number): integer version number.
+#let insert_metadata(output, version) = {
+  place(top + left)[
+    #box(width: 0pt, height: 0pt)[
+      #text(
+        fill: white.transparentize(100%),
+        size: 0.1pt,
+        costs: (hyphenation: 0%),
+      )[#{ "<version_marker>_" + output + "_v" + str(version) }]
+    ]
+  ]
+}
+
 #let _heading_for(output, version, cfg) = {
   // Version heading based on output type
   // Also insert metadata for file splitting
-  if not cfg.show_per_version {
-    return [#metadata((type: output, version: version)) <version_marker>]
-  }
 
   // Titles per output type
   let titles = (
@@ -330,17 +342,11 @@
     concept: "Concept version",
     key: "Answer Key — Version",
   )
+  let title_text = titles.at(output, default: "Version")
 
   // Metadata anchor for file splitting
-  let anchor = place(top + left, dx: -1cm, dy: -1cm)[
-      #metadata((type: output, version: version)) <version_marker>
-      #hide[.]
-    ]
-
-  // Render heading based on output type
-  let title_text = titles.at(output, default: "Version")
   [
-    #anchor
+    #insert_metadata(output, version)
     #heading(level: 1)[#title_text #_roman(version)]
   ]
 }
@@ -650,7 +656,8 @@
 #let mc-gen-split-script(filename: "example.typ") = {
   let script = (
     "
-import subprocess, json, os
+import subprocess, os, re
+
 try:
     from pypdf import PdfReader, PdfWriter
 except ImportError:
@@ -666,35 +673,41 @@ def split_exam(typ_file):
     result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8')
 
     if result.returncode != 0:
-        print('Error: Failed to query typst file. Ensure typst is in PATH.')
+        print(f'Error: Typst query failed with exit code {result.returncode}')
+        print('-' * 20 + ' STDERR ' + '-' * 20)
+        print(result.stderr)
+        print('-' * 48)
         return
 
-    markers = json.loads(result.stdout)
-    if not markers:
-        print('No <version_marker> found. Did you use metadata markers?')
-        return
-
-    # Read the PDF and split based on markers
     reader = PdfReader(pdf_file)
     total_pages = len(reader.pages)
 
-    if not os.path.exists('output'): os.mkdir('output')
+    marker_pages = []
+    pattern = re.compile(r'<version_marker>_([a-zA-Z]+)_v(\d+)')
 
-    for i, m in enumerate(markers):
-        start = m['location']['page'] - 1
-        end = markers[i+1]['location']['page'] - 1 if i+1 < len(markers) else total_pages
+    for i, page in enumerate(reader.pages):
+        text = page.extract_text() or ''
+        for m in pattern.findall(text):
+            marker = f\"{m[0]}_v{m[1]}\"
+            if marker not in [mp[1] for mp in marker_pages]:
+                marker_pages.append((i, marker))
 
-        info = m['value']
-        name = f\"{info['type']}\" + (f\"_v{info['version']}\" if 'version' in info else '')
+    marker_pages.sort(key=lambda x: x[0])
+    print(f\"Found {len(marker_pages)} version markers in PDF.\")
 
+    if not os.path.exists('output'):
+        os.mkdir('output')
+
+    for idx, (start_page, marker) in enumerate(marker_pages):
+        marker = marker.replace(\"<version_marker>\", \"\").strip(\"_\")
+        end_page = marker_pages[idx + 1][0] if idx + 1 < len(marker_pages) else total_pages
         writer = PdfWriter()
-        for p in range(start, end):
+        for p in range(start_page, end_page):
             writer.add_page(reader.pages[p])
-
-        out_path = f'output/{name}.pdf'
-        with open(out_path, 'wb') as f:
+        out_path = os.path.join(\"output\", f\"{marker}.pdf\")
+        with open(out_path, \"wb\") as f:
             writer.write(f)
-        print(f'Generated: {out_path}')
+        print(f\"Generated {out_path}\")
 
 if __name__ == '__main__':
     split_exam('"
@@ -704,8 +717,10 @@ if __name__ == '__main__':
   )
 
   block(breakable: false)[
+    #insert_metadata("script", 1)
     #heading(level: 1, "Automation Script")
     Save the following code as `split.py` and run it after compiling your PDF:
+    #show raw: set par(justify: false)
     #raw(script, lang: "python")
   ]
 }
