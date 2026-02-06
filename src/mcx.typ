@@ -17,27 +17,28 @@
 // -------------------------
 
 /// Create an answer.
-/// - `body`: content of the answer.
-/// - `mark`: "correct" or a number (points). Use none for 0.
+/// - body (content): content of the answer.
+/// - mark (string | number): "correct" or a number (points). Use none for 0.
 #let mc-answer(body, mark: none) = (
   body: body,
   mark: mark,
 )
 
-/// Create a question.
-/// - `body`: content of the question.
-/// - `answers`: array of answers made with `mc-answer`.
-/// - `follow`: if true, this question stays in the same block as previous.
-///             useful for reading comprehension sets where multiple questions
-///             refer to the same text
-/// - `permute`: controls the shuffling logic for choices.
-///             | "permuteall" | "fixlast" | (type: "fixlastn", n: 2) | "ordinal"
-///             | "permutenone" | (array of permutations).
-///             A user permutation is an array of answer indices, e.g. (1,3,2,4).
-///             Multiple permutations: ((1,2,3,4), (2,1,3,4), ...)
-/// - `instruction`: optional content that appears *before* this question.
-/// - `explanation`: optional explanation content that appears *in the concept* output.
-/// - `notes`: optional notes content that appears *in the concept* output.
+/// Create a question object.
+/// - `body` (content): The core content of the question. Supports text, math equations, and code blocks.
+/// - `answers` (array): An array of answer objects generated using the `mc-answer` function.
+/// - `follow` (boolean): Connectivity logic. If `true`, this question is bundled into a "block" with the previous one, ensuring they are shuffled together as a single unit. Ideal for reading comprehension or data analysis sets.
+/// - `instruction` (content): Optional introductory text (e.g., "Read the following passage to answer questions 1-3") that appears *before* the question body.
+/// - `explanation` (content): Optional solution or explanation shown only in the `concept` and `answers` output modes.
+/// - `notes` (content): Optional internal notes or metadata shown only in the `concept` output mode.
+/// - `permute`: Logic for shuffling answer choices.
+///   - `"permuteall"` **Full Random**: Shuffles all choices randomly (Default). |
+///   - `"fixlast"` **Fix Last**: Shuffles all choices except for the very last one (useful for "None of the above").
+///   - `(type: "fixlastn", n: 2)` **Fix Last N**: Keeps the specified number of choices at the end of the list static. `n` is clamped to `[1, total answers]`.
+///   - `"ordinal"` **Ordinal**: Maintains a logical or sequential order while still allowing for permutation logic.
+///   - `"permutenone"` **No Shuffling**: Displays choices in the exact order they are defined in the code.
+///   - `(1, 3, 2, 4)` **Fixed Map**: Manually forces a specific display order using an array of 1-based indices.
+///   - `((1,2..), (2,1..))` **Multi-Version Map**: Provides distinct manual permutations for different versions of the exam.
 #let mc-question(
   body,
   answers,
@@ -316,8 +317,11 @@
 // -------------------------
 
 #let _heading_for(output, version, cfg) = {
-  // Version heading based on output type.
-  if not cfg.show_per_version { return none }
+  // Version heading based on output type
+  // Also insert metadata for file splitting
+  if not cfg.show_per_version {
+    return [#metadata((type: output, version: version)) <version_marker>]
+  }
 
   // Titles per output type
   let titles = (
@@ -327,9 +331,18 @@
     key: "Answer Key — Version",
   )
 
+  // Metadata anchor for file splitting
+  let anchor = place(top + left, dx: -1cm, dy: -1cm)[
+      #metadata((type: output, version: version)) <version_marker>
+      #hide[.]
+    ]
+
   // Render heading based on output type
   let title_text = titles.at(output, default: "Version")
-  heading(level: 1)[#title_text #_roman(version)]
+  [
+    #anchor
+    #heading(level: 1)[#title_text #_roman(version)]
+  ]
 }
 
 #let _question_perm_table(questions, versions, q_order_by_v, cfg) = {
@@ -385,7 +398,7 @@
 
   // Render follow note if needed
   if has_follow {
-    text(size: 0.8em)[*:* Question follows previous]
+    text(size: 0.8em)[\*: Question follows previous]
   }
 }
 
@@ -585,7 +598,11 @@
 /// Render multiple-choice questions.
 /// Parameters:
 /// - `questions`: array of questions created with `mc-question`.
-/// - `output`: "concept" | "exam" | "answers" | "key".
+/// - `output` (string): output mode. One of:
+///   - `concept`: Concept version with all details.
+///   - `exam`: Student exam version.
+///   - `answers`: Answer version with solutions.
+///   - `key`: Answer key table only.
 /// - `number_of_versions`: total number of versions.
 /// - `version`: selected version (used when output wants per-version output).
 /// - `seed`: positive integer controlling deterministic randomization.
@@ -602,43 +619,93 @@
   randomize_answers: true,
   config: none,
 ) = {
+  // Sanitize inputs
   let cfg = _cfg(output, config)
+  let v = calc.clamp(int(version), 1, number_of_versions)
+  seed = calc.clamp(int(seed), 1, 2147483647)
 
-  // Clamp version
-  let v = calc.clamp(version, 1, number_of_versions)
-
-  // Compute permutations
+  // Precompute permutations
   let q_order_by_v = _permute_questions(questions, number_of_versions, seed, randomize_questions)
   let answers_perm_by_v = _permute_answers(questions, number_of_versions, seed, randomize_answers)
 
-  // Render
-  let parts = ()
-
-  // Version heading (if enabled)
-  parts = (..parts, _heading_for(output, v, cfg))
-
-  // Question permutation table
-  parts = (..parts, _question_perm_table(questions, number_of_versions, q_order_by_v, cfg))
-
-  // Question list and embedded per-question details
-  // In non-per-version outputs (such as concept), we render version 1 ordering by default.
-  let use_v = if cfg.show_per_version { v } else { 1 }
-  parts = (
-    ..parts,
+  let components = (
+    _heading_for(output, v, cfg),
+    _question_perm_table(questions, number_of_versions, q_order_by_v, cfg),
     _question_list(
       questions,
-      use_v,
+      if cfg.show_per_version { v } else { 1 },
       number_of_versions,
       q_order_by_v,
       answers_perm_by_v,
       cfg,
       output,
     ),
+    _key_table(questions, number_of_versions, q_order_by_v, answers_perm_by_v, cfg),
   )
 
-  // Key table
-  parts = (..parts, _key_table(questions, number_of_versions, q_order_by_v, answers_perm_by_v, cfg))
-
-  parts.filter(it => it != none).join()
+  components.filter(it => it != none).join()
 }
 
+/// Generate Python script for splitting compiled PDF into versions based on metadata markers.
+#let mc-gen-split-script(filename: "example.typ") = {
+  let script = (
+    "
+import subprocess, json, os
+try:
+    from pypdf import PdfReader, PdfWriter
+except ImportError:
+    print('Error: pypdf not found. Please run: pip install pypdf')
+    exit(1)
+
+def split_exam(typ_file):
+    pdf_file = typ_file.replace('.typ', '.pdf')
+    print(f'Querying metadata from {typ_file}...')
+
+    # Run typst query to get metadata markers
+    cmd = ['typst', 'query', typ_file, '<version_marker>']
+    result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8')
+
+    if result.returncode != 0:
+        print('Error: Failed to query typst file. Ensure typst is in PATH.')
+        return
+
+    markers = json.loads(result.stdout)
+    if not markers:
+        print('No <version_marker> found. Did you use metadata markers?')
+        return
+
+    # Read the PDF and split based on markers
+    reader = PdfReader(pdf_file)
+    total_pages = len(reader.pages)
+
+    if not os.path.exists('output'): os.mkdir('output')
+
+    for i, m in enumerate(markers):
+        start = m['location']['page'] - 1
+        end = markers[i+1]['location']['page'] - 1 if i+1 < len(markers) else total_pages
+
+        info = m['value']
+        name = f\"{info['type']}\" + (f\"_v{info['version']}\" if 'version' in info else '')
+
+        writer = PdfWriter()
+        for p in range(start, end):
+            writer.add_page(reader.pages[p])
+
+        out_path = f'output/{name}.pdf'
+        with open(out_path, 'wb') as f:
+            writer.write(f)
+        print(f'Generated: {out_path}')
+
+if __name__ == '__main__':
+    split_exam('"
+      + filename
+      + "')
+"
+  )
+
+  block(breakable: false)[
+    #heading(level: 1, "Automation Script")
+    Save the following code as `split.py` and run it after compiling your PDF:
+    #raw(script, lang: "python")
+  ]
+}
