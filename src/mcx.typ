@@ -609,44 +609,44 @@
 ///   - `exam`: Student exam version.
 ///   - `answers`: Answer version with solutions.
 ///   - `key`: Answer key table only.
-/// - `number_of_versions`: total number of versions.
+/// - `number-of-versions`: total number of versions.
 /// - `version`: selected version (used when output wants per-version output).
 /// - `seed`: positive integer controlling deterministic randomization.
-/// - `randomize_questions`: shuffle question blocks.
-/// - `randomize_answers`: shuffle answers according to `permute`.
+/// - `randomize-questions`: shuffle question blocks.
+/// - `randomize-answers`: shuffle answers according to `permute`.
 /// - `config`: dictionary overriding defaults (any of the cfg keys).
 #let mc-questions(
   questions,
   output: "exam",
-  number_of_versions: 4,
+  number-of-versions: 4,
   version: 1,
   seed: 1,
-  randomize_questions: true,
-  randomize_answers: true,
+  randomize-questions: true,
+  randomize-answers: true,
   config: none,
 ) = {
   // Sanitize inputs
   let cfg = _cfg(output, config)
-  let v = calc.clamp(int(version), 1, number_of_versions)
+  let v = calc.clamp(int(version), 1, number-of-versions)
   seed = calc.clamp(int(seed), 1, 2147483647)
 
   // Precompute permutations
-  let q_order_by_v = _permute_questions(questions, number_of_versions, seed, randomize_questions)
-  let answers_perm_by_v = _permute_answers(questions, number_of_versions, seed, randomize_answers)
+  let q_order_by_v = _permute_questions(questions, number-of-versions, seed, randomize-questions)
+  let answers_perm_by_v = _permute_answers(questions, number-of-versions, seed, randomize-answers)
 
   let components = (
     _heading_for(output, v, cfg),
-    _question_perm_table(questions, number_of_versions, q_order_by_v, cfg),
+    _question_perm_table(questions, number-of-versions, q_order_by_v, cfg),
     _question_list(
       questions,
       if cfg.show_per_version { v } else { 1 },
-      number_of_versions,
+      number-of-versions,
       q_order_by_v,
       answers_perm_by_v,
       cfg,
       output,
     ),
-    _key_table(questions, number_of_versions, q_order_by_v, answers_perm_by_v, cfg),
+    _key_table(questions, number-of-versions, q_order_by_v, answers_perm_by_v, cfg),
   )
 
   components.filter(it => it != none).join()

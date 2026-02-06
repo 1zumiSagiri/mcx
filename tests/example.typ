@@ -1,4 +1,4 @@
-#import "../src/mcx.typ": *
+#import "@preview/mcx:0.1.0": *
 
 #let qs = (
   mc-question(
@@ -166,34 +166,34 @@
   ),
 )
 
-#mc-questions(qs, output: "exam", number_of_versions: 4, version: 1, seed: 40)
+#mc-questions(qs, output: "exam", number-of-versions: 4, version: 1, seed: 40)
 
 #pagebreak()
-#mc-questions(qs, output: "exam", number_of_versions: 4, version: 2, seed: 40)
+#mc-questions(qs, output: "exam", number-of-versions: 4, version: 2, seed: 40)
 
 #pagebreak()
-#mc-questions(qs, output: "exam", number_of_versions: 4, version: 3, seed: 40)
+#mc-questions(qs, output: "exam", number-of-versions: 4, version: 3, seed: 40)
 
 #pagebreak()
-#mc-questions(qs, output: "exam", number_of_versions: 4, version: 4, seed: 40)
+#mc-questions(qs, output: "exam", number-of-versions: 4, version: 4, seed: 40)
 
 #pagebreak()
-#mc-questions(qs, output: "key", number_of_versions: 4, seed: 40)
+#mc-questions(qs, output: "key", number-of-versions: 4, seed: 40)
 
 #pagebreak()
-#mc-questions(qs, output: "concept", number_of_versions: 4, seed: 40)
+#mc-questions(qs, output: "concept", number-of-versions: 4, seed: 40)
 
 #pagebreak()
-#mc-questions(qs, output: "answers", number_of_versions: 4, version: 1, seed: 40)
+#mc-questions(qs, output: "answers", number-of-versions: 4, version: 1, seed: 40)
 
 #pagebreak()
-#mc-questions(qs, output: "answers", number_of_versions: 4, version: 2, seed: 40)
+#mc-questions(qs, output: "answers", number-of-versions: 4, version: 2, seed: 40)
 
 #pagebreak()
-#mc-questions(qs, output: "answers", number_of_versions: 4, version: 3, seed: 40)
+#mc-questions(qs, output: "answers", number-of-versions: 4, version: 3, seed: 40)
 
 #pagebreak()
-#mc-questions(qs, output: "answers", number_of_versions: 4, version: 4, seed: 40)
+#mc-questions(qs, output: "answers", number-of-versions: 4, version: 4, seed: 40)
 
 // Note:
 // The above code generates multiple versions of an exam, answer key, concept explanations, and answer lists based on a set of multiple-choice questions.

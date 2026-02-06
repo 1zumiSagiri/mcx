@@ -29,7 +29,7 @@ Below is an example of how to use `mcx.typ` to create a simple multiple-choice e
 <summary>Show code</summary>
 
 ```typst
-#import "mcx.typ": *
+#import "@preview/mcx:0.1.0": *
 
 #let qs = (
   mc-question(
@@ -58,19 +58,19 @@ Below is an example of how to use `mcx.typ` to create a simple multiple-choice e
   )
 )
 
-#mc-questions(qs, output: "exam", number_of_versions: 2, version: 2, seed: 5)
+#mc-questions(qs, output: "exam", number-of-versions: 2, version: 2, seed: 5)
 
-#mc-questions(qs, output: "exam", number_of_versions: 2, version: 1, seed: 5)
+#mc-questions(qs, output: "exam", number-of-versions: 2, version: 1, seed: 5)
 
-#mc-questions(qs, output: "key", number_of_versions: 2, seed: 5)
+#mc-questions(qs, output: "key", number-of-versions: 2, seed: 5)
 
-#mc-questions(qs, output: "concept", number_of_versions: 2, seed: 5)
+#mc-questions(qs, output: "concept", number-of-versions: 2, seed: 5)
 ```
 </details>
 
-See [`tests/example.typ`](tests/example.typ) for a complete example.
+See [`tests/example.typ`](https://github.com/1zumiSagiri/mcx/blob/master/tests/example.typ) for a complete example.
 
 ## Usage
-Import the package using `#import "mcx.typ": *`.
+Import the package using `#import "@preview/mcx:0.1.0": *`.
 
-The full documentation is available in the [manual](docs/manual.pdf).
+The full documentation is available in the [manual](https://github.com/1zumiSagiri/mcx/blob/master/docs/manual.pdf).
