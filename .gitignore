@@ -1,0 +1,5 @@
+**/*.pdf
+.vscode/
+.DS_Store
+
+!docs/manual.pdf

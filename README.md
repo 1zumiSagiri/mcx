@@ -12,7 +12,7 @@
 A Typst package for typesetting randomized multiple-choice exams.
 
 `mcx.typ` is an independent implementation for Typst.
-It is inspired by the user-facing functionality of the LaTeX package _mcexam_, and is redesigned specifically for Typst’s typesetting and scripting model.
+It is inspired by the user-facing functionality of the LaTeX package [_mcexam_](https://ctan.org/pkg/mcexam), and is redesigned specifically for Typst’s typesetting and scripting model.
 
 ## Features
 
@@ -32,4 +32,54 @@ It is inspired by the user-facing functionality of the LaTeX package _mcexam_, a
 - `mc-gen-split-script()` Provides a Python script to split generated content into separate files or sections.
 
 ## Quick Start
+Below is an example of how to use `mcx.typ` to create a simple multiple-choice exam with two questions, generate two versions of the exam, and produce an answer key and concept sheet.
+
+<details>
+<summary>Show code</summary>
+
+```typst
+#import "mcx.typ": *
+
+#let qs = (
+  mc-question(
+    [What is 2 + 3?],
+    (
+      mc-answer([3]),
+      mc-answer([4]),
+      mc-answer([5], mark: "correct"),
+      mc-answer([22]),
+    ),
+    permute: "permuteall"
+  ),
+  mc-question(
+    [
+      Given function: $f(x) = x^3 - 2x^2 + 5x - 7$
+
+      Calculate $f'(2)$.
+    ],
+    (
+      mc-answer([$9$], mark: "correct"),
+      mc-answer([$22$]),
+      mc-answer([$5$]),
+      mc-answer([$-7$]),
+    ),
+    permute: "permutenone"
+  )
+)
+
+#mc-questions(qs, output: "exam", number_of_versions: 2, version: 2, seed: 5)
+
+#mc-questions(qs, output: "exam", number_of_versions: 2, version: 1, seed: 5)
+
+#mc-questions(qs, output: "key", number_of_versions: 2, seed: 5)
+
+#mc-questions(qs, output: "concept", number_of_versions: 2, seed: 5)
+```
+</details>
+
 See [`tests/example.typ`](tests/example.typ) for a complete example.
+
+## Usage
+Import the package using `#import "mcx.typ": *`.
+
+The full documentation is available in the [manual](docs/mcx-manual.typ).

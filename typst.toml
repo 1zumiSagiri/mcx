@@ -1,10 +1,10 @@
 [package]
 name = "mcx"
 version = "0.1.0"
-authors = ["1zumiSagiri"]
+authors = ["1zumiSagiri <https://1zumisagiri.github.io/>"]
 entrypoint = "src/lib.typ"
 license = "MIT"
-description = "A Typst package for creating multiple-choice exams."
+description = "Typesetting randomized multiple-choice exams."
 repository = "https://github.com/1zumiSagiri/mcx"
-keywords = ["exam", "multiple-choice", "education"]
+keywords = ["exam", "multiple-choice", "education", "randomization"]
 exclude = [".gitignore", "example.typ", "example.pdf"]
