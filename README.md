@@ -1,12 +1,3 @@
-> [!WARNING]
-> Still a work in progress
-
-> [!NOTE]
->
-> Todo:
-> - Fix metadata for file splitting (currently unable to insert <version_marker>).
-> - Documentation.
-
 # mcx.typ
 
 A Typst package for typesetting randomized multiple-choice exams.
@@ -82,4 +73,4 @@ See [`tests/example.typ`](tests/example.typ) for a complete example.
 ## Usage
 Import the package using `#import "mcx.typ": *`.
 
-The full documentation is available in the [manual](docs/mcx-manual.typ).
+The full documentation is available in the [manual](docs/manual.pdf).
