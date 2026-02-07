@@ -9,38 +9,53 @@ It is inspired by the user-facing functionality of the LaTeX package [_mcexam_](
 
 - Define multiple-choice questions and answers.
 - Generate multiple versions of an exam with randomized question and answer order.
-  - Options to control shuffling behavior: 
+  - Options to control shuffling behavior:
     - No shuffling.
     - Shuffle all questions and answers.
-    - Shuffle only questions.
     - Shuffle questions while grouping related questions together.
     - Shuffle only answers.
-        - Permute all answers.
-        - Permute all but the last `n` answers (e.g., "None of the above").
-        - No shuffling.
-- Produce answer keys and concept sheets.
+      - Permute all answers.
+      - Permute all but the last `n` answers (e.g., "None of the above").
+      - User-defined permutation order.
+      - No shuffling.
+- Produce answer keys.
 - Support for code blocks within questions and answers.
-- `mc-gen-split-script()` Provides a Python script to split generated content into separate files or sections.
 
 ## Quick Start
-Below is an example of how to use `mcx.typ` to create a simple multiple-choice exam with two questions, generate two versions of the exam, and produce an answer key and concept sheet.
+
+Below is an example of how to use `mcx` to create a simple multiple-choice exam with two questions, generate two versions of the exam, and produce an answer key with a concept review sheet for permutation verification.
+
+<details>
+<summary>Example</summary>
+  <img src="https://github.com/1zumiSagiri/mcx/blob/master/docs/images/quick_start_example.png" alt="Quick Start Example" width="600px" />
+</details>
 
 <details>
 <summary>Show code</summary>
 
-```typst
+````typst
 #import "@preview/mcx:0.1.0": *
 
 #let qs = (
   mc-question(
-    [What is 2 + 3?],
+    [
+      What does this OCaml function do?
+
+      ```ocaml
+          let rec fib n =
+              if n <= 1
+                  then n
+              else
+                  fib (n - 1) + fib (n - 2)
+      ```
+    ],
     (
-      mc-answer([3]),
-      mc-answer([4]),
-      mc-answer([5], mark: "correct"),
-      mc-answer([22]),
+      mc-answer([Calculates the n-th Fibonacci number.], mark: "correct"),
+      mc-answer([Calculates the factorial of n.]),
+      mc-answer([Calculates the n-th prime number.]),
+      mc-answer([Calculates the sum of the first n natural numbers.]),
     ),
-    permute: "permuteall"
+    permute: "permuteall",
   ),
   mc-question(
     [
@@ -54,23 +69,30 @@ Below is an example of how to use `mcx.typ` to create a simple multiple-choice e
       mc-answer([$5$]),
       mc-answer([$-7$]),
     ),
-    permute: "permutenone"
+    permute: (type: "fixlastn", n: 2),
   )
 )
 
-#mc-questions(qs, output: "exam", number-of-versions: 2, version: 2, seed: 5)
+#mc-questions(qs, output: "exam", number-of-versions: 2, version: 1, seed: 6)
 
-#mc-questions(qs, output: "exam", number-of-versions: 2, version: 1, seed: 5)
+#mc-questions(qs, output: "exam", number-of-versions: 2, version: 2, seed: 6)
 
-#mc-questions(qs, output: "key", number-of-versions: 2, seed: 5)
+#pagebreak()
+#mc-questions(qs, output: "key", number-of-versions: 2, seed: 6)
 
-#mc-questions(qs, output: "concept", number-of-versions: 2, seed: 5)
-```
+#mc-questions(qs, output: "concept", number-of-versions: 2, seed: 6)
+````
+
 </details>
 
 See [`tests/example.typ`](https://github.com/1zumiSagiri/mcx/blob/master/tests/example.typ) for a complete example.
 
 ## Usage
-Import the package using `#import "@preview/mcx:0.1.0": *`.
+
+Import the package using
+
+```typst
+#import "@preview/mcx:0.1.0": *
+```
 
 The full documentation is available in the [manual](https://github.com/1zumiSagiri/mcx/blob/master/docs/manual.pdf).
