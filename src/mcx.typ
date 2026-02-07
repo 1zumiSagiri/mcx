@@ -72,7 +72,7 @@
     show_explanation: true,
     show_a_perm_table: true,
     show_notes: true,
-    show_key_table: false
+    show_key_table: false,
   ),
   exam: (
     show_per_version: true,
@@ -83,7 +83,7 @@
     show_explanation: false,
     show_a_perm_table: false,
     show_notes: false,
-    show_key_table: false
+    show_key_table: false,
   ),
   answers: (
     show_per_version: true,
@@ -94,7 +94,7 @@
     show_explanation: true,
     show_a_perm_table: false,
     show_notes: false,
-    show_key_table: false
+    show_key_table: false,
   ),
   key: (
     show_per_version: false,
@@ -105,7 +105,7 @@
     show_explanation: false,
     show_a_perm_table: false,
     show_notes: false,
-    show_key_table: true
+    show_key_table: true,
   ),
 )
 
@@ -335,15 +335,17 @@
   let titles = (
     exam: "Version",
     answers: "Answers — Version",
-    concept: "Concept version",
-    key: "Answer Key — Version",
+    concept: "Concept",
+    key: "Answer Key",
   )
   let title_text = titles.at(output, default: "Version")
 
   // Metadata anchor for file splitting
   [
     #insert_metadata(output, version)
-    #heading(level: 1)[#title_text #_roman(version)]
+    #align(center)[
+      #heading(level: 1)[#title_text #{ if output == "exam" [ #_roman(version) ] else { "" } } ]
+    ]
   ]
 }
 
@@ -512,7 +514,6 @@
   })
 
   block(breakable: false)[
-    *Answer Key*
     #table(
       columns: 1 + versions,
       inset: 5pt,
