@@ -1,5 +1,10 @@
 #import "@preview/mcx:0.1.0": *
 
+#let output = sys.inputs.at("output", default: "exam")
+#let num_vers = int(sys.inputs.at("number-of-versions", default: "4"))
+#let ver = int(sys.inputs.at("version", default: "1"))
+#let seed = int(sys.inputs.at("seed", default: "5"))
+
 #let qs = (
   mc-question(
     [What is 2 + 2?],
@@ -166,34 +171,92 @@
   ),
 )
 
-#mc-questions(qs, output: "exam", number-of-versions: 4, version: 1, seed: 40)
+#mc-questions(
+  qs,
+  output: "exam",
+  number-of-versions: num_vers,
+  version: 1,
+  seed: seed,
+)
 
 #pagebreak()
-#mc-questions(qs, output: "exam", number-of-versions: 4, version: 2, seed: 40)
+#mc-questions(
+  qs,
+  output: "exam",
+  number-of-versions: num_vers,
+  version: 2,
+  seed: seed,
+)
 
 #pagebreak()
-#mc-questions(qs, output: "exam", number-of-versions: 4, version: 3, seed: 40)
+#mc-questions(
+  qs,
+  output: "exam",
+  number-of-versions: num_vers,
+  version: 3,
+  seed: seed,
+)
 
 #pagebreak()
-#mc-questions(qs, output: "exam", number-of-versions: 4, version: 4, seed: 40)
+#mc-questions(
+  qs,
+  output: "exam",
+  number-of-versions: num_vers,
+  version: 4,
+  seed: seed,
+)
 
 #pagebreak()
-#mc-questions(qs, output: "key", number-of-versions: 4, seed: 40)
+#mc-questions(
+  qs,
+  output: "key",
+  number-of-versions: num_vers,
+  seed: seed,
+)
 
 #pagebreak()
-#mc-questions(qs, output: "concept", number-of-versions: 4, seed: 40)
+#mc-questions(
+  qs,
+  output: "concept",
+  number-of-versions: num_vers,
+  seed: seed,
+)
 
 #pagebreak()
-#mc-questions(qs, output: "answers", number-of-versions: 4, version: 1, seed: 40)
+#mc-questions(
+  qs,
+  output: "answers",
+  number-of-versions: num_vers,
+  version: 1,
+  seed: seed,
+)
 
 #pagebreak()
-#mc-questions(qs, output: "answers", number-of-versions: 4, version: 2, seed: 40)
+#mc-questions(
+  qs,
+  output: "answers",
+  number-of-versions: num_vers,
+  version: 2,
+  seed: seed,
+)
 
 #pagebreak()
-#mc-questions(qs, output: "answers", number-of-versions: 4, version: 3, seed: 40)
+#mc-questions(
+  qs,
+  output: "answers",
+  number-of-versions: num_vers,
+  version: 3,
+  seed: seed,
+)
 
 #pagebreak()
-#mc-questions(qs, output: "answers", number-of-versions: 4, version: 4, seed: 40)
+#mc-questions(
+  qs,
+  output: "answers",
+  number-of-versions: num_vers,
+  version: 4,
+  seed: seed,
+)
 
 // Note:
 // The above code generates multiple versions of an exam, answer key, concept explanations, and answer lists based on a set of multiple-choice questions.
