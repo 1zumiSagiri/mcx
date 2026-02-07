@@ -14,7 +14,7 @@
   set page(
     header: context {
       if counter(page).get().first() > 1 [
-        #name — #description
+        #name
       ]
     },
     margin: (top: 3cm, bottom: 2cm, x: 2.5cm)

@@ -72,8 +72,7 @@
     show_explanation: true,
     show_a_perm_table: true,
     show_notes: true,
-    show_key_table: false,
-    show_r_snippet: false,
+    show_key_table: false
   ),
   exam: (
     show_per_version: true,
@@ -84,8 +83,7 @@
     show_explanation: false,
     show_a_perm_table: false,
     show_notes: false,
-    show_key_table: false,
-    show_r_snippet: false,
+    show_key_table: false
   ),
   answers: (
     show_per_version: true,
@@ -96,8 +94,7 @@
     show_explanation: true,
     show_a_perm_table: false,
     show_notes: false,
-    show_key_table: false,
-    show_r_snippet: false,
+    show_key_table: false
   ),
   key: (
     show_per_version: false,
@@ -108,8 +105,7 @@
     show_explanation: false,
     show_a_perm_table: false,
     show_notes: false,
-    show_key_table: true,
-    show_r_snippet: false,
+    show_key_table: true
   ),
 )
 
