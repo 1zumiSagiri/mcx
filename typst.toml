@@ -1,6 +1,6 @@
 [package]
 name = "mcx"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["1zumiSagiri <https://1zumisagiri.github.io/>"]
 entrypoint = "src/lib.typ"
 license = "MIT"

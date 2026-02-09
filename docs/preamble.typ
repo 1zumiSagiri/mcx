@@ -2,7 +2,7 @@
 #let preamble(
   name: "mcx",
   author: "1zumiSagiri",
-  version: "0.1.0",
+  version: "0.1.1",
   description: "A Typst package for typesetting randomized multiple-choice exams.",
   body
 ) = {

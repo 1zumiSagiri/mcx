@@ -104,7 +104,7 @@
     _question_perm_table(questions, number-of-versions, q_order_by_v, cfg),
     _question_list(
       questions,
-      if cfg.show_per_version { v } else { 1 },
+      if cfg.show-per-version { v } else { 1 },
       number-of-versions,
       q_order_by_v,
       answers_perm_by_v,

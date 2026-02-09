@@ -1,4 +1,4 @@
-#import "@preview/mcx:0.1.0": *
+#import "@preview/mcx:0.1.1": *
 
 #let output = sys.inputs.at("output", default: "exam")
 #let num_vers = int(sys.inputs.at("number-of-versions", default: "4"))

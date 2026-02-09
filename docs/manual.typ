@@ -17,7 +17,7 @@ The `mcx` package is a Typst implementation inspired by the LaTeX package mcexam
 To get started with `mcx`, you can import the package into your Typst document:
 
 ```typst
-#import "@preview/mcx:0.1.0": *
+#import "@preview/mcx:0.1.1": *
 ```
 
 = Defining Question List <defining-questions>
