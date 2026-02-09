@@ -51,15 +51,15 @@ The `mc-questions` function takes the question list and generates the specified 
   - The questions grouped together by the `follow` parameter in `mc-question` will be treated as a single block when `randomize-questions` is enabled, meaning that the entire block will be shuffled together while maintaining the internal order of questions within the block. This allows for maintaining logical connections between questions while still randomizing their order in the exam @question.
 - `randomize-answers`: Same as `randomize-questions` but for answer choices.
 - `config`: Provide a custom boolean dictionary configuration for the output mode.
-  - `show_per_version`: Display the version number at the top of each generated exam version.
-  - `show_q_perm_table`: Display the question permutation table.
-  - `show_q_list`: Display the list of questions.
-  - `show_correct`: Display the correct answers in the output.
-  - `show_points`: Display the points for each question.
-  - `show_explanation`: Display the explanations for each question.
-  - `show_a_perm_table`: Display the answer permutation table.
-  - `show_notes`: Display internal notes.
-  - `show_key_table`: Display the answer key table.
+  - `show-per-version`: Display the version number at the top of each generated exam version.
+  - `show-q-perm-table`: Display the question permutation table.
+  - `show-q-list`: Display the list of questions.
+  - `show-correct`: Display the correct answers in the output.
+  - `show-points`: Display the points for each question.
+  - `show-explanation`: Display the explanations for each question.
+  - `show-a-perm-table`: Display the answer permutation table.
+  - `show-notes`: Display internal notes.
+  - `show-key-table`: Display the answer key table.
 
 = Defining Question `mc-question` <question>
 ```typst

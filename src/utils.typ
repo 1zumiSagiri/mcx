@@ -7,48 +7,48 @@
 // Default configuration per output type
 #let _defaults_by_output = (
   concept: (
-    show_per_version: false,
-    show_q_perm_table: true,
-    show_q_list: true,
-    show_correct: true,
-    show_points: true,
-    show_explanation: true,
-    show_a_perm_table: true,
-    show_notes: true,
-    show_key_table: false,
+    show-per-version: false,
+    show-q-perm-table: true,
+    show-q-list: true,
+    show-correct: true,
+    show-points: true,
+    show-explanation: true,
+    show-a-perm-table: true,
+    show-notes: true,
+    show-key-table: false,
   ),
   exam: (
-    show_per_version: true,
-    show_q_perm_table: false,
-    show_q_list: true,
-    show_correct: false,
-    show_points: false,
-    show_explanation: false,
-    show_a_perm_table: false,
-    show_notes: false,
-    show_key_table: false,
+    show-per-version: true,
+    show-q-perm-table: false,
+    show-q-list: true,
+    show-correct: false,
+    show-points: false,
+    show-explanation: false,
+    show-a-perm-table: false,
+    show-notes: false,
+    show-key-table: false,
   ),
   answers: (
-    show_per_version: true,
-    show_q_perm_table: false,
-    show_q_list: true,
-    show_correct: true,
-    show_points: true,
-    show_explanation: true,
-    show_a_perm_table: false,
-    show_notes: false,
-    show_key_table: false,
+    show-per-version: true,
+    show-q-perm-table: false,
+    show-q-list: true,
+    show-correct: true,
+    show-points: true,
+    show-explanation: true,
+    show-a-perm-table: false,
+    show-notes: false,
+    show-key-table: false,
   ),
   key: (
-    show_per_version: false,
-    show_q_perm_table: false,
-    show_q_list: false,
-    show_correct: false,
-    show_points: false,
-    show_explanation: false,
-    show_a_perm_table: false,
-    show_notes: false,
-    show_key_table: true,
+    show-per-version: false,
+    show-q-perm-table: false,
+    show-q-list: false,
+    show-correct: false,
+    show-points: false,
+    show-explanation: false,
+    show-a-perm-table: false,
+    show-notes: false,
+    show-key-table: true,
   ),
 )
 
@@ -275,8 +275,8 @@
 
 #let _question_perm_table(questions, versions, q_order_by_v, cfg) = {
   // Question permutation table across versions.
-  // If `show_q_perm_table` in config is false, returns none.
-  if not cfg.show_q_perm_table { return none }
+  // If `show-q-perm-table` in config is false, returns none.
+  if not cfg.show-q-perm-table { return none }
 
   // Build table
   // Columns: Question | → | Version I | Version II | ...
@@ -331,7 +331,7 @@
 }
 
 #let _answer_perm_table(questions, versions, answers_perm_by_v, q_id, cfg) = {
-  if not cfg.show_a_perm_table { return none }
+  if not cfg.show-a-perm-table { return none }
   let q = questions.at(q_id - 1)
   let n = q.answers.len()
   if n == 0 { return none }
@@ -379,7 +379,7 @@
 
 
 #let _key_table(questions, versions, q_order_by_v, answers_perm_by_v, cfg) = {
-  if not cfg.show_key_table { return none }
+  if not cfg.show-key-table { return none }
 
   // Determine whether we have points or correctness
   let has_correct = questions.any(q => q.answers.any(a => a.mark == "correct"))
@@ -451,10 +451,10 @@
 }
 
 #let _question_list(questions, version, versions, q_order_by_v, answers_perm_by_v, cfg, output) = {
-  if not cfg.show_q_list { return none }
+  if not cfg.show-q-list { return none }
 
   // 1. Displayed order for this version
-  let q_order = if cfg.show_per_version { q_order_by_v.at(version - 1) } else { range(1, questions.len() + 1) }
+  let q_order = if cfg.show-per-version { q_order_by_v.at(version - 1) } else { range(1, questions.len() + 1) }
 
   // Build enum items and render a single question list.
   let items = q_order
@@ -472,7 +472,7 @@
 
       let info_items = ()
 
-      if cfg.show_correct {
+      if cfg.show-correct {
         let correct = q.answers.enumerate().filter(((i, a)) => a.mark == "correct").map(((i, a)) => i + 1)
         if correct.len() > 0 {
           let disp = correct.map(orig => amap.position(x => x == orig) + 1)
@@ -481,7 +481,7 @@
       }
 
       // Points details
-      if cfg.show_points and q.answers.any(a => a.mark != none) {
+      if cfg.show-points and q.answers.any(a => a.mark != none) {
         let parts = amap
           .enumerate()
           .map(((d_idx, o_idx)) => {
@@ -493,9 +493,9 @@
       }
 
       // Explanation, permutation table, notes
-      if cfg.show_explanation and q.explanation != none { info_items.push([*Explanation:* #q.explanation]) }
-      if cfg.show_a_perm_table { info_items.push(_answer_perm_table(questions, versions, answers_perm_by_v, qid, cfg)) }
-      if cfg.show_notes and q.notes != none { info_items.push([*Notes:* #q.notes]) }
+      if cfg.show-explanation and q.explanation != none { info_items.push([*Explanation:* #q.explanation]) }
+      if cfg.show-a-perm-table { info_items.push(_answer_perm_table(questions, versions, answers_perm_by_v, qid, cfg)) }
+      if cfg.show-notes and q.notes != none { info_items.push([*Notes:* #q.notes]) }
 
       let info_block = if info_items.len() > 0 {
         block(width: 100%, inset: (left: 0.5em), stroke: (left: 0.5pt + luma(200)))[
