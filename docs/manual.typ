@@ -127,3 +127,7 @@ In case you are interested in understanding the internal workings of the `mcx` p
   - This map is ultimately used to generate the "Question Permutation Table" and the "Answer Key".
 - #strong[Rendering and Output:]
   - Based on the selected `output` mode (such as `exam`, `answers`, or `concept`), the system determines whether to render correct answer markers, solution explanations, or point values.
+
+= Revision History <revision-history>
+- #strong[v0.1.1]: Fixed critical bug in `mc-questions` that was accessing an outdated data structure.
+- #strong[v0.1.0]: Initial release.

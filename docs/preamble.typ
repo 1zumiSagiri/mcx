@@ -2,7 +2,6 @@
 #let preamble(
   name: "mcx",
   author: "1zumiSagiri",
-  version: "0.1.1",
   description: "A Typst package for typesetting randomized multiple-choice exams.",
   body
 ) = {
@@ -24,16 +23,21 @@
   show link: it => underline(text(fill: blue)[#it])
   show ref: it => text(fill: blue)[#it]
 
-  block(width: 100%, height: 80%)[
-    #set align(center + horizon)
+  block(width: 100%, height: 40%)[
+    #set align(center)
     #text(size: 2.5em, weight: "bold")[#name] \
     #v(1em)
     #text(size: 1.2em)[#description]
     #v(2em)
-    *Author:* #author \
-    *Version:* #version
+    *Author:* #author
   ]
-  
+
+  show outline.entry.where(
+    level: 1
+  ): set block(above: 1.2em)
+
+  outline()
+
   pagebreak()
 
   body
