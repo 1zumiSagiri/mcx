@@ -32,10 +32,10 @@
 /// - `explanation` (content): Optional solution or explanation shown only in the `concept` and `answers` output modes.
 /// - `notes` (content): Optional internal notes or metadata shown only in the `concept` output mode.
 /// - `permute`: Logic for shuffling answer choices.
-///   - `"permuteall"` **Full Random**: Shuffles all choices randomly (Default). |
+///   - `"permuteall"` **Full Random**: Shuffles all choices randomly (Default).
 ///   - `"fixlast"` **Fix Last**: Shuffles all choices except for the very last one (useful for "None of the above").
 ///   - `(type: "fixlastn", n: 2)` **Fix Last N**: Keeps the specified number of choices at the end of the list static. `n` is clamped to `[1, total answers]`.
-///   - `"ordinal"` **Ordinal**: Maintains a logical or sequential order while still allowing for permutation logic.
+///   - `"ordinal"` **Ordinal**: Either no shuffling or reverses the order.
 ///   - `"permutenone"` **No Shuffling**: Displays choices in the exact order they are defined in the code.
 ///   - `(1, 3, 2, 4)` **Fixed Map**: Manually forces a specific display order using an array of 1-based indices.
 ///   - `((1,2..), (2,1..))` **Multi-Version Map**: Provides distinct manual permutations for different versions of the exam.
