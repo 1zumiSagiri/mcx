@@ -8,7 +8,7 @@
 #let _default_style = (
   font: "Libertinus Serif",
   font-size: 11pt,
-  version-numbering: "I",
+  v-numbering: "I",
   q-numbering: "1",
   a-numbering: "A",
   line-spacing: 0.65em,
@@ -83,23 +83,45 @@
 
     // Type check values
     if k == "font" {
-      if type(v) != str {
+      if type(v) != str and type(v) != array {
         continue
       }
     } else if k == "font-size" {
-      if type(v) != length {
+      if type(v) != length or v <= 0pt {
         continue
       }
     } else if k == "line-spacing" {
-      if type(v) != length and type(v) != float and type(v) != int {
+      if type(v) == float or type(v) == int {
+        if v <= 0 { continue }
+      } else if type(v) == length {
+        if v <= 0pt { continue }
+      } else {
         continue
       }
     } else if k in ("version-numbering", "q-numbering", "a-numbering") {
-      if type(v) != str {
+      if type(v) != str and type(v) != function {
         continue
       }
     } else if k == "margin" {
-      if type(v) != dictionary {
+      let is_valid = false
+
+      if type(v) == length {
+        if v >= 0pt { is_valid = true }
+      } else if type(v) == dictionary {
+        is_valid = true
+        for (side, val) in v {
+          if side not in ("top", "bottom", "left", "right", "x", "y", "rest") {
+            is_valid = false
+            break
+          }
+          if type(val) != length or val < 0pt {
+            is_valid = false
+            break
+          }
+        }
+      }
+
+      if not is_valid {
         continue
       }
     }
@@ -114,11 +136,25 @@
   // Configuration selector
   // Merges defaults with user config
   let base = _defaults_by_output.at(output)
-  if config == none {
-    base
-  } else {
-    base + config
+
+  if config == none { return base }
+
+  let valid_updates = (:)
+
+  for (k, v) in config {
+    if k not in base {
+      // Invalid config key, ignore
+      continue
+    }
+
+    if type(v) != bool {
+      continue
+    }
+
+    valid_updates.insert(k, v)
   }
+
+  base + valid_updates
 }
 
 // -------------------------
@@ -310,7 +346,7 @@
 // Label helpers
 // -------------------------
 
-#let _fmt_ver(v, sty) = numbering(sty.version-numbering, v)
+#let _fmt_v(v, sty) = numbering(sty.v-numbering, v)
 #let _fmt_q(idx, sty) = numbering(sty.q-numbering, idx)
 #let _fmt_a(idx, sty) = numbering(sty.a-numbering, idx)
 
@@ -350,7 +386,9 @@
   [
     #_insert_metadata(output, version)
     #align(center)[
-      #heading(level: 1)[#title_text #{ if output == "exam" [ #_fmt_ver(version, style) ] else { "" } } ]
+      #heading(level: 1)[#title_text #{
+          if output == "exam" or output == "answers" [ #_fmt_v(version, style) ] else { "" }
+        } ]
     ]
   ]
 }
@@ -372,7 +410,7 @@
   let header = (
     [Question],
     [$arrow.r$],
-    ..range(1, versions + 1).map(v => [#_fmt_ver(v, style)]),
+    ..range(1, versions + 1).map(v => [#_fmt_v(v, style)]),
   )
 
   let has_follow = questions.any(q => q.follow)
@@ -465,7 +503,7 @@
       align: (left, center, ..range(versions).map(_ => center)),
       inset: 3pt,
       stroke: luma(180),
-      ..([Answer], [$arrow.r$], ..range(1, versions + 1).map(v => [#_fmt_ver(v, style)])),
+      ..([Answer], [$arrow.r$], ..range(1, versions + 1).map(v => [#_fmt_v(v, style)])),
       ..rows.flatten(),
     )
   ]
@@ -495,7 +533,7 @@
 
   let data_cells = range(questions.len()).map(row_idx => {
     // First cell: question label
-    let q_label = [#numbering("1", row_idx + 1)]
+    let q_label = _fmt_q(row_idx + 1, style)
 
     // Generate the subsequent version columns for this row
     let v_columns = range(versions).map(v_idx => {
@@ -630,7 +668,11 @@
     })
 
   // Render one enumeration.
-  enum(numbering: "1.", spacing: 1.5em, ..items)
+  enum(
+    numbering: style.q-numbering + if output == "exam" or output == "answers" { "." } else { "" },
+    spacing: 1.5em,
+    ..items,
+  )
 }
 
 #let _apply_style(sty, body) = {

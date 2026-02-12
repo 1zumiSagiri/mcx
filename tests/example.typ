@@ -1,4 +1,4 @@
-#import "@preview/mcx:0.2.0": *
+#import "@preview/mcx:0.2.1": *
 
 #let output = sys.inputs.at("output", default: "exam")
 #let num_vers = int(sys.inputs.at("number-of-versions", default: "4"))
@@ -6,11 +6,8 @@
 #let seed = int(sys.inputs.at("seed", default: "5"))
 
 #let style = (
-  font: "Libertinus Serif",
   font-size: 11pt,
-  version-numbering: "I",
-  q-numbering: "1",
-  a-numbering: "A",
+  v-numbering: "1",
   line-spacing: 0.65em,
   margin: (top: 1in, bottom: 1in, left: 1in, right: 1in),
 )

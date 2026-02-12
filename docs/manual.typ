@@ -17,7 +17,7 @@ The `mcx` package is a Typst implementation inspired by the LaTeX package mcexam
 To get started with `mcx`, you can import the package into your Typst document:
 
 ```typst
-#import "@preview/mcx:0.2.0": *
+#import "@preview/mcx:0.2.1": *
 ```
 
 = Defining Question List <defining-questions>
@@ -53,7 +53,7 @@ The `mc-questions` function takes the question list and generates the specified 
 - `style`: A dictionary allowing users to customize the appearance of the output via predefined or custom styles. The available style options are:
   - `font` (string): Font family for the output, "Libertinus Serif" by default.
   - `font-size` (length): Base font size for the output, `11pt` by default.
-  - `version-numbering` (string): Numbering style for versions (e.g., "I", "1", "a"), "I" by default.
+  - `v-numbering` (string): Numbering style for versions (e.g., "I", "1", "a"), "I" by default.
   - `q-numbering` (string): Question numbering style (e.g., "1, 2, 3", "a, b, c", "i, ii, iii"), "1" by default.
   - `a-numbering` (string): Answer choice numbering style (e.g., "A, B, C", "1, 2, 3", "a, b, c"), "A" by default.
   - `line-spacing` (length|float|int): Line spacing multiplier, `0.65em` by default.
@@ -137,6 +137,7 @@ In case you are interested in understanding the internal workings of the `mcx` p
   - Based on the selected `output` mode (such as `exam`, `answers`, or `concept`), the system determines whether to render correct answer markers, solution explanations, or point values.
 
 = Revision History <revision-history>
+- #strong[v0.2.1]: Improved input sanity checks when using custom styles and configurations in `mc-questions`; fix bugs related to title formatting and question labeling.
 - #strong[v0.2.0]: Added `style` parameter to `mc-questions` for customizing output appearance.
 - #strong[v0.1.1]: Fixed critical bug in `mc-questions` that was accessing an outdated data structure.
 - #strong[v0.1.0]: Initial release.

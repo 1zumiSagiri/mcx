@@ -73,7 +73,7 @@
 /// - `style`: dictionary allowing users to customize the appearance via predefined or custom styles.
 ///   - `font` (string): Font family for the output, "Libertinus Serif" by default.
 ///   - `font-size` (length): Base font size for the output, `11pt` by default.
-///   - `version-numbering` (string): Numbering style for versions (e.g., "I", "1", "a"), "I" by default.
+///   - `v-numbering` (string): Numbering style for versions (e.g., "I", "1", "a"), "I" by default.
 ///   - `q-numbering` (string): Question numbering style (e.g., "1, 2, 3", "a, b, c", "i, ii, iii"), "1" by default.
 ///   - `a-numbering` (string): Answer choice numbering style (e.g., "A, B, C", "1, 2, 3", "a, b, c"), "A" by default.
 ///   - `line-spacing` (length|float|int): Line spacing multiplier, `0.65em` by default.
