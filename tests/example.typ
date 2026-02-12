@@ -1,9 +1,19 @@
-#import "@preview/mcx:0.1.1": *
+#import "@preview/mcx:0.2.0": *
 
 #let output = sys.inputs.at("output", default: "exam")
 #let num_vers = int(sys.inputs.at("number-of-versions", default: "4"))
 #let ver = int(sys.inputs.at("version", default: "1"))
 #let seed = int(sys.inputs.at("seed", default: "5"))
+
+#let style = (
+  font: "Libertinus Serif",
+  font-size: 11pt,
+  version-numbering: "I",
+  q-numbering: "1",
+  a-numbering: "A",
+  line-spacing: 0.65em,
+  margin: (top: 1in, bottom: 1in, left: 1in, right: 1in),
+)
 
 #let qs = (
   mc-question(
@@ -69,7 +79,7 @@
       mc-answer([It computes the factorial of a number.], mark: "correct"),
       mc-answer([It computes the Fibonacci sequence.]),
       mc-answer([It sorts a list of numbers.]),
-      mc-answer(`let x = 1 * 2 * 3 in x`),
+      mc-answer([`let x = 1 * 2 * 3 in x`]),
       mc-answer([It reverses a string.]),
       mc-answer([It reverses two strings.]),
       mc-answer([It reverses three strings.]),
@@ -177,6 +187,7 @@
   number-of-versions: num_vers,
   version: 1,
   seed: seed,
+  style: style,
 )
 
 #pagebreak()
@@ -186,6 +197,7 @@
   number-of-versions: num_vers,
   version: 2,
   seed: seed,
+  style: style,
 )
 
 #pagebreak()
@@ -195,6 +207,7 @@
   number-of-versions: num_vers,
   version: 3,
   seed: seed,
+  style: style,
 )
 
 #pagebreak()
@@ -204,6 +217,7 @@
   number-of-versions: num_vers,
   version: 4,
   seed: seed,
+  style: style,
 )
 
 #pagebreak()
@@ -212,6 +226,7 @@
   output: "key",
   number-of-versions: num_vers,
   seed: seed,
+  style: style,
 )
 
 #pagebreak()
@@ -220,6 +235,7 @@
   output: "concept",
   number-of-versions: num_vers,
   seed: seed,
+  style: style,
 )
 
 #pagebreak()
@@ -229,6 +245,7 @@
   number-of-versions: num_vers,
   version: 1,
   seed: seed,
+  style: style,
 )
 
 #pagebreak()
@@ -238,6 +255,7 @@
   number-of-versions: num_vers,
   version: 2,
   seed: seed,
+  style: style,
 )
 
 #pagebreak()
@@ -247,6 +265,7 @@
   number-of-versions: num_vers,
   version: 3,
   seed: seed,
+  style: style,
 )
 
 #pagebreak()
@@ -256,6 +275,7 @@
   number-of-versions: num_vers,
   version: 4,
   seed: seed,
+  style: style,
 )
 
 // Note:

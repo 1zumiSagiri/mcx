@@ -4,6 +4,17 @@
 // Defaults / configuration
 // -------------------------
 
+// Default formatting style
+#let _default_style = (
+  font: "Libertinus Serif",
+  font-size: 11pt,
+  version-numbering: "I",
+  q-numbering: "1",
+  a-numbering: "A",
+  line-spacing: 0.65em,
+  margin: auto,
+)
+
 // Default configuration per output type
 #let _defaults_by_output = (
   concept: (
@@ -52,11 +63,62 @@
   ),
 )
 
+#let _sty(style) = {
+  // Merge user style with defaults
+  if style == none {
+    return _default_style
+  }
+
+  let valid_updates = (:)
+
+  for (k, v) in style {
+    if k not in _default_style {
+      // Invalid style key, ignore
+      continue
+    }
+
+    if v == auto or v == none {
+      continue
+    }
+
+    // Type check values
+    if k == "font" {
+      if type(v) != str {
+        continue
+      }
+    } else if k == "font-size" {
+      if type(v) != length {
+        continue
+      }
+    } else if k == "line-spacing" {
+      if type(v) != length and type(v) != float and type(v) != int {
+        continue
+      }
+    } else if k in ("version-numbering", "q-numbering", "a-numbering") {
+      if type(v) != str {
+        continue
+      }
+    } else if k == "margin" {
+      if type(v) != dictionary {
+        continue
+      }
+    }
+
+    valid_updates.insert(k, v)
+  }
+
+  _default_style + valid_updates
+}
+
 #let _cfg(output, config) = {
   // Configuration selector
   // Merges defaults with user config
   let base = _defaults_by_output.at(output)
-  if config == none { base } else { base + config }
+  if config == none {
+    base
+  } else {
+    base + config
+  }
 }
 
 // -------------------------
@@ -116,7 +178,13 @@
 
 #let _normalize_user_perms(perms) = {
   // Ensure perms is array of arrays
-  if perms.len() == 0 { perms } else if type(perms.at(0)) == array { perms } else { (perms,) }
+  if perms.len() == 0 {
+    perms
+  } else if type(perms.at(0)) == array {
+    perms
+  } else {
+    (perms,)
+  }
 }
 
 #let _is_fixlastn(q) = {
@@ -124,7 +192,13 @@
   (type(p) == str and p == "fixlast") or (type(p) == dictionary and p.at("type", default: "") == "fixlastn")
 }
 
-#let _permute_answers_for_question(q, versions, seed, randomize, display_index) = {
+#let _permute_answers_for_question(
+  q,
+  versions,
+  seed,
+  randomize,
+  display_index,
+) = {
   // Handle the various permute types for a single question.
   let n = q.answers.len()
   let base = range(1, n + 1)
@@ -196,14 +270,25 @@
   })
 }
 
-#let _permute_answers(questions, versions, seed, randomize) = {
+#let _permute_answers(
+  questions,
+  versions,
+  seed,
+  randomize,
+) = {
   // Shuffle answers per question to produce per-version answer orderings.
   // Returns answers_perm[v][q_original] = array display->original
   let q_count = questions.len()
   range(versions).map(v_idx => {
     let v = v_idx + 1
     range(q_count).map(q_idx => {
-      _permute_answers_for_question(questions.at(q_idx), versions, seed, randomize, q_idx + 1).at(v_idx)
+      _permute_answers_for_question(
+        questions.at(q_idx),
+        versions,
+        seed,
+        randomize,
+        q_idx + 1,
+      ).at(v_idx)
     })
   })
 }
@@ -225,12 +310,9 @@
 // Label helpers
 // -------------------------
 
-#let _roman(n) = numbering("I", n)
-#let _qnum(n) = numbering("1", n)
-#let _anum(n) = numbering("a", n)
-
-#let _answer_label(n) = [ (#_anum(n)) ]
-#let _answer_label_paren(n) = [ #text("(")#_anum(n)#text(")") ]
+#let _fmt_ver(v, sty) = numbering(sty.version-numbering, v)
+#let _fmt_q(idx, sty) = numbering(sty.q-numbering, idx)
+#let _fmt_a(idx, sty) = numbering(sty.a-numbering, idx)
 
 // -------------------------
 // Rendering helpers
@@ -251,7 +333,7 @@
   ]
 }
 
-#let _heading_for(output, version, cfg) = {
+#let _heading_for(output, version, cfg, style) = {
   // Version heading based on output type
   // Also insert metadata for file splitting
 
@@ -268,12 +350,18 @@
   [
     #_insert_metadata(output, version)
     #align(center)[
-      #heading(level: 1)[#title_text #{ if output == "exam" [ #_roman(version) ] else { "" } } ]
+      #heading(level: 1)[#title_text #{ if output == "exam" [ #_fmt_ver(version, style) ] else { "" } } ]
     ]
   ]
 }
 
-#let _question_perm_table(questions, versions, q_order_by_v, cfg) = {
+#let _question_perm_table(
+  questions,
+  versions,
+  q_order_by_v,
+  cfg,
+  style,
+) = {
   // Question permutation table across versions.
   // If `show-q-perm-table` in config is false, returns none.
   if not cfg.show-q-perm-table { return none }
@@ -284,7 +372,7 @@
   let header = (
     [Question],
     [$arrow.r$],
-    ..range(1, versions + 1).map(v => [#_roman(v)]),
+    ..range(1, versions + 1).map(v => [#_fmt_ver(v, style)]),
   )
 
   let has_follow = questions.any(q => q.follow)
@@ -299,13 +387,13 @@
     // Return one row as array
     (
       // Original question number
-      [#star#numbering("1", q_idx)],
+      [#star #_fmt_q(q_idx, style)],
       [$arrow.r$],
       ..range(versions).map(v_idx => {
         let order = q_order_by_v.at(v_idx)
         // Find displayed position of original question q
         let disp = order.position(x => x == q_idx) + 1
-        [#numbering("1", disp)]
+        [#_fmt_q(disp, style)]
       }),
     )
   })
@@ -330,7 +418,14 @@
   }
 }
 
-#let _answer_perm_table(questions, versions, answers_perm_by_v, q_id, cfg) = {
+#let _answer_perm_table(
+  questions,
+  versions,
+  answers_perm_by_v,
+  q_id,
+  cfg,
+  style,
+) = {
   if not cfg.show-a-perm-table { return none }
   let q = questions.at(q_id - 1)
   let n = q.answers.len()
@@ -355,11 +450,11 @@
   let desc = desc_map.at(p_type, default: [*(Answers permuted by user)*])
 
   let rows = range(1, n + 1).map(a => (
-    _answer_label_paren(a),
+    _fmt_a(a, style),
     [$arrow.r$],
     ..range(versions).map(v_idx => {
       let map = answers_perm_by_v.at(v_idx).at(q_id - 1)
-      _answer_label_paren(map.at(a - 1))
+      _fmt_a(map.at(a - 1), style)
     }),
   ))
 
@@ -370,7 +465,7 @@
       align: (left, center, ..range(versions).map(_ => center)),
       inset: 3pt,
       stroke: luma(180),
-      ..([Answer], [$arrow.r$], ..range(1, versions + 1).map(v => [#_roman(v)])),
+      ..([Answer], [$arrow.r$], ..range(1, versions + 1).map(v => [#_fmt_ver(v, style)])),
       ..rows.flatten(),
     )
   ]
@@ -378,7 +473,14 @@
 
 
 
-#let _key_table(questions, versions, q_order_by_v, answers_perm_by_v, cfg) = {
+#let _key_table(
+  questions,
+  versions,
+  q_order_by_v,
+  answers_perm_by_v,
+  cfg,
+  style,
+) = {
   if not cfg.show-key-table { return none }
 
   // Determine whether we have points or correctness
@@ -389,7 +491,7 @@
 
   // Iterate over versions, building the answer key table
   // based on the projected display order and answer permutations.
-  let header = ([Question], ..range(1, versions + 1).map(v => [#_roman(v)]))
+  let header = ([Question], ..range(1, versions + 1).map(v => [#numbering("I", v)]))
 
   let data_cells = range(questions.len()).map(row_idx => {
     // First cell: question label
@@ -409,7 +511,7 @@
           .filter(((i, a)) => a.mark == "correct")
           .map(((i, a)) => {
             let pos = amap.position(x => x == i + 1) + 1
-            _answer_label_paren(pos)
+            _fmt_a(pos, style)
           })
           .join(", ")
       } else { "" }
@@ -421,7 +523,7 @@
           .map(((disp_pos, orig_idx)) => {
             let mark = q.answers.at(int(orig_idx) - 1).mark
             if mark != none and mark != "correct" {
-              [#_answer_label_paren(disp_pos + 1): #mark#text(size: 0.6em)[pt]]
+              [#_fmt_a(disp_pos + 1, style) = #mark#text(size: 0.6em)[pt]]
             }
           })
           .filter(it => it != none)
@@ -450,7 +552,16 @@
   ]
 }
 
-#let _question_list(questions, version, versions, q_order_by_v, answers_perm_by_v, cfg, output) = {
+#let _question_list(
+  questions,
+  version,
+  versions,
+  q_order_by_v,
+  answers_perm_by_v,
+  cfg,
+  style,
+  output,
+) = {
   if not cfg.show-q-list { return none }
 
   // 1. Displayed order for this version
@@ -465,7 +576,9 @@
       let amap = answers_perm_by_v.at(version - 1).at(qid - 1)
 
       let answer_enum = enum(
-        numbering: n => _answer_label_paren(n),
+        // Answer enumeration style
+        // appended by `.` if not already present in the numbering style
+        numbering: n => _fmt_a(n, style) + (if style.a-numbering.ends-with(".") { "" } else { "." }),
         tight: true,
         ..amap.map(orig => block[#q.answers.at(int(orig) - 1).body]),
       )
@@ -476,7 +589,7 @@
         let correct = q.answers.enumerate().filter(((i, a)) => a.mark == "correct").map(((i, a)) => i + 1)
         if correct.len() > 0 {
           let disp = correct.map(orig => amap.position(x => x == orig) + 1)
-          info_items.push([*Correct answer(s):* #disp.map(d => _answer_label_paren(d)).join([, ])])
+          info_items.push([*Correct answer(s):* #disp.map(d => _fmt_a(d, style)).join([, ])])
         }
       }
 
@@ -487,14 +600,16 @@
           .map(((d_idx, o_idx)) => {
             let m = q.answers.at(int(o_idx) - 1).mark
             let pts = if m == none { 0 } else if m == "correct" { 1 } else { m }
-            [#_answer_label_paren(d_idx + 1) = #pts]
+            [#_fmt_a(d_idx + 1, style) = #pts]
           })
         info_items.push([*Answer points:* #parts.join([, ])])
       }
 
       // Explanation, permutation table, notes
       if cfg.show-explanation and q.explanation != none { info_items.push([*Explanation:* #q.explanation]) }
-      if cfg.show-a-perm-table { info_items.push(_answer_perm_table(questions, versions, answers_perm_by_v, qid, cfg)) }
+      if cfg.show-a-perm-table {
+        info_items.push(_answer_perm_table(questions, versions, answers_perm_by_v, qid, cfg, style))
+      }
       if cfg.show-notes and q.notes != none { info_items.push([*Notes:* #q.notes]) }
 
       let info_block = if info_items.len() > 0 {
@@ -516,6 +631,25 @@
 
   // Render one enumeration.
   enum(numbering: "1.", spacing: 1.5em, ..items)
+}
+
+#let _apply_style(sty, body) = {
+  set page(margin: sty.margin)
+
+  set text(
+    font: sty.font,
+    size: sty.font-size,
+  )
+
+  let leading-val = if type(sty.line-spacing) == float or type(sty.line-spacing) == int {
+    0.65em * sty.line-spacing
+  } else {
+    sty.line-spacing
+  }
+
+  set par(leading: leading-val)
+
+  body
 }
 
 /// Generate Python script for splitting compiled PDF into versions based on metadata markers.

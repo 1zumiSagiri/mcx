@@ -70,6 +70,14 @@
 /// - `seed`: positive integer controlling deterministic randomization.
 /// - `randomize-questions`: shuffle question blocks.
 /// - `randomize-answers`: shuffle answers according to `permute`.
+/// - `style`: dictionary allowing users to customize the appearance via predefined or custom styles.
+///   - `font` (string): Font family for the output, "Libertinus Serif" by default.
+///   - `font-size` (length): Base font size for the output, `11pt` by default.
+///   - `version-numbering` (string): Numbering style for versions (e.g., "I", "1", "a"), "I" by default.
+///   - `q-numbering` (string): Question numbering style (e.g., "1, 2, 3", "a, b, c", "i, ii, iii"), "1" by default.
+///   - `a-numbering` (string): Answer choice numbering style (e.g., "A, B, C", "1, 2, 3", "a, b, c"), "A" by default.
+///   - `line-spacing` (length|float|int): Line spacing multiplier, `0.65em` by default.
+///   - `margin` (dictionary (string, length)): Page margin size (e.g., top : `1in`).
 /// - `config` : boolean dictionary overriding defaults (any of the cfg keys)
 ///   - `show-per-version`: Show per-version question numbering.
 ///   - `show-q-perm-table`: Show question permutation table.
@@ -89,9 +97,11 @@
   randomize-questions: true,
   randomize-answers: true,
   config: none,
+  style: none,
 ) = {
   // Sanitize inputs
   let cfg = _cfg(output, config)
+  let style = _sty(style)
   let v = calc.clamp(int(version), 1, number-of-versions)
   seed = calc.clamp(int(seed), 1, 2147483647)
 
@@ -100,8 +110,8 @@
   let answers_perm_by_v = _permute_answers(questions, number-of-versions, seed, randomize-answers)
 
   let components = (
-    _heading_for(output, v, cfg),
-    _question_perm_table(questions, number-of-versions, q_order_by_v, cfg),
+    _heading_for(output, v, cfg, style),
+    _question_perm_table(questions, number-of-versions, q_order_by_v, cfg, style),
     _question_list(
       questions,
       if cfg.show-per-version { v } else { 1 },
@@ -109,10 +119,13 @@
       q_order_by_v,
       answers_perm_by_v,
       cfg,
+      style,
       output,
     ),
-    _key_table(questions, number-of-versions, q_order_by_v, answers_perm_by_v, cfg),
+    _key_table(questions, number-of-versions, q_order_by_v, answers_perm_by_v, cfg, style),
   )
 
-  components.filter(it => it != none).join()
+  let final_content = components.filter(it => it != none).join()
+
+  _apply_style(style, final_content)
 }

@@ -17,7 +17,7 @@ The `mcx` package is a Typst implementation inspired by the LaTeX package mcexam
 To get started with `mcx`, you can import the package into your Typst document:
 
 ```typst
-#import "@preview/mcx:0.1.1": *
+#import "@preview/mcx:0.2.0": *
 ```
 
 = Defining Question List <defining-questions>
@@ -50,6 +50,14 @@ The `mc-questions` function takes the question list and generates the specified 
 - `randomize-questions`: A boolean parameter that controls whether the order of questions should be randomized. If set to `true`, the questions will be shuffled based on the specified `seed`. If set to `false`, the questions will appear in the order they are defined in the source code across all versions. By default, this parameter is set to `true`.
   - The questions grouped together by the `follow` parameter in `mc-question` will be treated as a single block when `randomize-questions` is enabled, meaning that the entire block will be shuffled together while maintaining the internal order of questions within the block. This allows for maintaining logical connections between questions while still randomizing their order in the exam @question.
 - `randomize-answers`: Same as `randomize-questions` but for answer choices.
+- `style`: A dictionary allowing users to customize the appearance of the output via predefined or custom styles. The available style options are:
+  - `font` (string): Font family for the output, "Libertinus Serif" by default.
+  - `font-size` (length): Base font size for the output, `11pt` by default.
+  - `version-numbering` (string): Numbering style for versions (e.g., "I", "1", "a"), "I" by default.
+  - `q-numbering` (string): Question numbering style (e.g., "1, 2, 3", "a, b, c", "i, ii, iii"), "1" by default.
+  - `a-numbering` (string): Answer choice numbering style (e.g., "A, B, C", "1, 2, 3", "a, b, c"), "A" by default.
+  - `line-spacing` (length|float|int): Line spacing multiplier, `0.65em` by default.
+  - `margin` (dictionary (string, length)): Page margin size (e.g., top : `1in`).
 - `config`: Provide a custom boolean dictionary configuration for the output mode.
   - `show-per-version`: Display the version number at the top of each generated exam version.
   - `show-q-perm-table`: Display the question permutation table.
@@ -129,5 +137,6 @@ In case you are interested in understanding the internal workings of the `mcx` p
   - Based on the selected `output` mode (such as `exam`, `answers`, or `concept`), the system determines whether to render correct answer markers, solution explanations, or point values.
 
 = Revision History <revision-history>
+- #strong[v0.2.0]: Added `style` parameter to `mc-questions` for customizing output appearance.
 - #strong[v0.1.1]: Fixed critical bug in `mc-questions` that was accessing an outdated data structure.
 - #strong[v0.1.0]: Initial release.
