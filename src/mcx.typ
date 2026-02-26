@@ -27,6 +27,8 @@
 /// Create a question object.
 /// - `body` (content): The core content of the question. Supports text, math equations, and code blocks.
 /// - `answers` (array): An array of answer objects generated using the `mc-answer` function.
+/// - `q-breakable` (boolean): If `true`, allows the question content to break across pages. Useful for long question content. Default is `false`.
+/// - `a-breakable` (boolean): Similar to `q-breakable`, but applies to answer choice list and individual answer choices. Default is `false`.
 /// - `follow` (boolean): Connectivity logic. If `true`, this question is bundled into a "block" with the previous one, ensuring they are shuffled together as a single unit. Ideal for reading comprehension or data analysis sets.
 /// - `instruction` (content): Optional introductory text (e.g., "Read the following passage to answer questions 1-3") that appears *before* the question body.
 /// - `explanation` (content): Optional solution or explanation shown only in the `concept` and `answers` output modes.
@@ -43,6 +45,8 @@
   body,
   answers,
   follow: false,
+  q-breakable: false,
+  a-breakable: false,
   permute: "permuteall",
   instruction: none,
   explanation: none,
@@ -51,6 +55,8 @@
   body: body,
   answers: answers,
   follow: follow,
+  q-breakable: q-breakable,
+  a-breakable: a-breakable,
   permute: permute,
   instruction: instruction,
   explanation: explanation,

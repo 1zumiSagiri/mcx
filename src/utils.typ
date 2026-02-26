@@ -618,7 +618,7 @@
         // appended by `.` if not already present in the numbering style
         numbering: n => _fmt_a(n, style) + (if style.a-numbering.ends-with(".") { "" } else { "." }),
         tight: true,
-        ..amap.map(orig => block[#q.answers.at(int(orig) - 1).body]),
+        ..amap.map(orig => block(breakable: q.at("a-breakable", default: false))[#q.answers.at(int(orig) - 1).body]),
       )
 
       let info_items = ()
@@ -651,7 +651,11 @@
       if cfg.show-notes and q.notes != none { info_items.push([*Notes:* #q.notes]) }
 
       let info_block = if info_items.len() > 0 {
-        block(width: 100%, inset: (left: 0.5em), stroke: (left: 0.5pt + luma(200)))[
+        block(
+          width: 100%,
+          inset: (left: 0.5em),
+          stroke: (left: 0.5pt + luma(200)),
+        )[
           #set text(size: 9pt)
           #set par(leading: 0.65em)
           #info_items.join([\ ])
@@ -660,10 +664,27 @@
 
       // Assemble the final question item
       enum.item(disp_idx)[
-        #{ if q.instruction != none { block(text(style: "italic", q.instruction)) } }
-        #block(width: 100%)[#q.body]
-        #block(inset: (left: 0.5em))[#answer_enum]
-        #info_block
+        // Any of the q-breakable or a-breakable flags allow the entire question item to break across pages if needed.
+        #block(
+          breakable: q.at("q-breakable", default: false) or q.at("a-breakable", default: false),
+        )[#{
+            if q.instruction != none {
+              block(
+                // Instruction style follows question body style
+                breakable: q.at("q-breakable", default: false),
+              )[#text(style: "italic", q.instruction)]
+            }
+          }
+          #block(
+            width: 100%,
+            breakable: q.at("q-breakable", default: false),
+          )[#q.body]
+          #block(
+            inset: (left: 0.5em),
+            breakable: q.at("a-breakable", default: false),
+          )[#answer_enum]
+          #info_block
+        ]
       ]
     })
 

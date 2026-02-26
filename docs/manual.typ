@@ -7,17 +7,17 @@
 The `mcx` package is a Typst implementation inspired by the LaTeX package mcexam. It allows educators to create randomized, multiple-version exams with automated answer keys, solution guides, and diagnostic tables. It also provides features for generating `Python` scripts to automate the exam generation process. `mcx` is inspired by LaTeX package #link("https://ctan.org/pkg/mcexam")[`mcexam`], but is designed to be more flexible when user wants to insert code snippets or other content, leveraging Typst's powerful typesetting capabilities.
 
 == Features <features>
-- #strong[Randomized Exams:] Create multiple versions of an exam with randomized question order and/or answer choices using a single `seed` value.
-- #strong[Flexible Shuffling:] Randomize question blocks (respecting connectivity logic) and answer choices.
-- #strong[Multiple Output Modes:] Seamlessly switch between student exams, answer keys, solution manuals, and exam generation concept overviews.
-- #strong[Automated Tables:] Generate question and answer permutation tables to track how content moved between versions.
-- #strong[PDF Splitting:] Includes a helper script to automatically split a single compiled PDF into individual version files.
+- *Randomized Exams:* Create multiple versions of an exam with randomized question order and/or answer choices using a single `seed` value.
+- *Flexible Shuffling:* Randomize question blocks (respecting connectivity logic) and answer choices.
+- *Multiple Output Modes:* Seamlessly switch between student exams, answer keys, solution manuals, and exam generation concept overviews.
+- *Automated Tables:* Generate question and answer permutation tables to track how content moved between versions.
+- *PDF Splitting:* Includes a helper script to automatically split a single compiled PDF into individual version files.
 
 = Getting Started <getting-started>
 To get started with `mcx`, you can import the package into your Typst document:
 
 ```typst
-#import "@preview/mcx:0.2.1": *
+#import "@preview/mcx:0.3.0": *
 ```
 
 = Defining Question List <defining-questions>
@@ -101,6 +101,7 @@ The `mc-questions` function takes the question list and generates the specified 
 ```
 
 `mc-question` is the primary constructor for defining a multiple-choice question. It takes `body` which is a content block for the question text and an array of `mc-answer` for the answer choices. There are also optional parameters for controlling the permutation of questions and answers, as well as providing explanations and notes:
+- `q-breakable` and `a-breakable`: These parameters allow you to specify whether the question content or individual answer choices can break across pages. This is useful for long questions or answer choices that may not fit on a single page. By default, both are set to `false`, meaning that the content will not break across pages.
 - `permute`: Package will randomize the order of answers based on the specified permutation type. Details on the available permutation options for answers are provided in @permute-answers.
 - `follow`: The questions will be grouped together with the next `follow` questions, and the entire group will be permuted together based on the specified `permute` option. This allows for maintaining logical connections between questions while still randomizing their order in the exam.
 - `instruction`: Provide an `instruction` that will be displayed at the beginning of the group of questions. This is useful for providing context or specific instructions related to the grouped questions.
@@ -124,20 +125,21 @@ When defining answers for `mc-question`, `mc-answer` should be provided for each
 
 = Data Flow Process <data-flow>
 In case you are interested in understanding the internal workings of the `mcx` package, here is a high-level overview of the data flow process that occurs when you run the exam generation script:
-- #strong[Data Collection:] All objects created via `mc-question` are gathered into a single array.
-- #strong[First Layer Shuffling (Question Order):]
+- *Data Collection:* All objects created via `mc-question` are gathered into a single array.
+- *First Layer Shuffling (Question Order):*
   - The system identifies questions marked with `follow: true` and bundles them with the preceding question into indivisible "blocks".
   - Subsequently, the order of these blocks is randomized based on the defined `seed` and the specific `version` number.
-- #strong[Second Layer Shuffling (Answer Order):]
+- *Second Layer Shuffling (Answer Order):*
   - The program iterates through each individual question and shuffles its internal `answers` array according to its specific `permute` attribute (e.g., `permuteall`, `fixlast`).
-- #strong[Mapping and Recording:]
+- *Mapping and Recording:*
   - The system automatically generates a mapping table to track the relationship between original and displayed positions (e.g., Question 1 in Version A corresponds to Question 5 in the source data; its Option A corresponds to original Option C).
   - This map is ultimately used to generate the "Question Permutation Table" and the "Answer Key".
-- #strong[Rendering and Output:]
+- *Rendering and Output:*
   - Based on the selected `output` mode (such as `exam`, `answers`, or `concept`), the system determines whether to render correct answer markers, solution explanations, or point values.
 
 = Revision History <revision-history>
-- #strong[v0.2.1]: Improved input sanity checks when using custom styles and configurations in `mc-questions`; fix bugs related to title formatting and question labeling.
-- #strong[v0.2.0]: Added `style` parameter to `mc-questions` for customizing output appearance.
-- #strong[v0.1.1]: Fixed critical bug in `mc-questions` that was accessing an outdated data structure.
-- #strong[v0.1.0]: Initial release.
+- *v0.3.0*: Added `q-breakable` and `a-breakable` parameters to allow questions and answers to break across pages.
+- *v0.2.1*: Improved input sanity checks when using custom styles and configurations in `mc-questions`; fix bugs related to title formatting and question labeling.
+- *v0.2.0*: Added `style` parameter to `mc-questions` for customizing output appearance.
+- *v0.1.1*: Fixed critical bug in `mc-questions` that was accessing an outdated data structure.
+- *v0.1.0*: Initial release.

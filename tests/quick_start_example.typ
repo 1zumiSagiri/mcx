@@ -1,4 +1,4 @@
-#import "@preview/mcx:0.2.1": *
+#import "@preview/mcx:0.3.0": *
 
 #let qs = (
   mc-question(

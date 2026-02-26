@@ -1,4 +1,4 @@
-#import "@preview/mcx:0.2.1": *
+#import "@preview/mcx:0.3.0": *
 
 #let output = sys.inputs.at("output", default: "exam")
 #let num_vers = int(sys.inputs.at("number-of-versions", default: "4"))
@@ -175,6 +175,37 @@
     permute: ((2, 1, 3, 4), (3, 2, 1, 4)),
     explanation: [『神奈川沖浪裏』は葛飾北斎によって描かれました。],
     notes: [この問題は日本語で書かれています],
+  ),
+  mc-question(
+    [
+      Hrothgar, king of the Danes, or Scyldings, builds a great mead-hall, or palace, in which he hopes to feast his liegemen and to give them presents. The joy of king and retainers is, however, of short duration. Grendel, the monster, is seized with hateful jealousy. He cannot brook the sounds of joyance that reach him down in his fen-dwelling near the hall. Oft and anon he goes to the joyous building, bent on direful mischief. Thane after thane is ruthlessly carried off and devoured, while no one is found strong enough and bold enough to cope with the monster. For twelve years he persecutes Hrothgar and his vassals.
+
+      Over sea, a day's voyage off, Beowulf, of the Geats, nephew of Higelac, king of the Geats, hears of Grendel's doings and of Hrothgar's misery. He resolves to crush the fell monster and relieve the aged king. With fourteen chosen companions, he sets sail for Dane-land. Reaching that country, he soon persuades Hrothgar of his ability to help him. The hours that elapse before night are spent in beer-drinking and conversation. When Hrothgar's bedtime comes he leaves the hall in charge of Beowulf, telling him that never before has he given to another the absolute wardship of his palace. All retire to rest, Beowulf, as it were, sleeping upon his arms.
+
+      Grendel comes, the great march-stepper, bearing God's anger. He seizes and kills one of the sleeping warriors. Then he advances towards Beowulf. A fierce and desperate hand-to-hand struggle ensues. No arms are used, both combatants trusting to strength and hand-grip. Beowulf tears Grendel's shoulder from its socket, and the monster retreats to his den, howling and yelling with agony and fury. The wound is fatal.
+
+      The next morning, at early dawn, warriors in numbers flock to the hall Heorot, to hear the news. Joy is boundless. Glee runs high. Hrothgar and his retainers are lavish of gratitude and of gifts.
+
+      Grendel's mother, however, comes the next night to avenge his death. She is furious and raging. While Beowulf is sleeping in a room somewhat apart from the quarters of the other warriors, she seizes one of Hrothgar's favorite counsellors, and carries him off and devours him. Beowulf is called. Determined to leave Heorot entirely purified, he arms himself, and goes down to look for the female monster. After traveling through the waters many hours, he meets her near the sea-bottom. She drags him to her den. There he sees Grendel lying dead. After a desperate and almost fatal struggle with the woman, he slays her, and swims upward in triumph, taking with him Grendel's head.
+      Joy is renewed at Heorot. Congratulations crowd upon the victor. Hrothgar literally pours treasures into the lap of Beowulf; and it is agreed among the vassals of the king that Beowulf will be their next liegelord.
+
+      Beowulf leaves Dane-land. Hrothgar weeps and laments at his departure.
+
+      When the hero arrives in his own land, Higelac treats him as a distinguished guest. He is the hero of the hour.
+
+      Beowulf subsequently becomes king of his own people, the Geats. After he has been ruling for fifty years, his own neighborhood is wofully harried by a fire-spewing dragon. Beowulf determines to kill him. In the ensuing struggle both Beowulf and the dragon are slain. The grief of the Geats is inexpressible. They determine, however, to leave nothing undone to honor the memory of their lord. A great funeral-pyre is built, and his body is burnt. Then a memorial-barrow is made, visible from a great distance, that sailors afar may be constantly reminded of the prowess of the national hero of Geatland.
+
+      The poem closes with a glowing tribute to his bravery, his gentleness, his goodness of heart, and his generosity.
+
+      Question: Who is the hero of the poem?
+    ],
+    (
+      mc-answer([Beowulf], mark: "correct"),
+      mc-answer([Hrothgar]),
+      mc-answer([Grendel]),
+      mc-answer([Grendel's mother]),
+    ),
+    q-breakable: true,
   ),
 )
 
