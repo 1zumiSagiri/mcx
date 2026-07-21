@@ -85,6 +85,7 @@
 ///   - `line-spacing` (length|float|int): Line spacing multiplier, `0.65em` by default.
 ///   - `margin` (dictionary (string, length)): Page margin size (e.g., top : `1in`).
 /// - `config` : boolean dictionary overriding defaults (any of the cfg keys)
+///   - `show-header`: Show heading at the top of output.
 ///   - `show-per-version`: Show per-version question numbering.
 ///   - `show-q-perm-table`: Show question permutation table.
 ///   - `show-q-list`: Show question list.
