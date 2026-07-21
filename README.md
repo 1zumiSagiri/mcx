@@ -27,14 +27,14 @@ Below is an example of how to use `mcx` to create a simple multiple-choice exam 
 
 <details>
 <summary>Example</summary>
-  <img src="https://github.com/1zumiSagiri/mcx/blob/v0.3.0/docs/images/quick_start_example.png" alt="Quick Start Example" width="600px" />
+  <img src="https://github.com/1zumiSagiri/mcx/blob/v0.4.0/docs/images/quick_start_example.png" alt="Quick Start Example" width="600px" />
 </details>
 
 <details>
 <summary>Show code</summary>
 
 ````typst
-#import "@preview/mcx:0.3.0": *
+#import "@preview/mcx:0.4.0": *
 
 #let qs = (
   mc-question(
@@ -85,14 +85,14 @@ Below is an example of how to use `mcx` to create a simple multiple-choice exam 
 
 </details>
 
-See [`tests/example.typ`](https://github.com/1zumiSagiri/mcx/blob/v0.3.0/tests/example.typ) for a complete example.
+See [`tests/example.typ`](https://github.com/1zumiSagiri/mcx/blob/v0.4.0/tests/example.typ) for a complete example.
 
 ## Usage
 
 Import the package using
 
 ```typst
-#import "@preview/mcx:0.3.0": *
+#import "@preview/mcx:0.4.0": *
 ```
 
-The full documentation is available in the [manual](https://github.com/1zumiSagiri/mcx/blob/v0.3.0/docs/manual.pdf).
+The full documentation is available in the [manual](https://github.com/1zumiSagiri/mcx/blob/v0.4.0/docs/manual.pdf).

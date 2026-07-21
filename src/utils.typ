@@ -18,6 +18,7 @@
 // Default configuration per output type
 #let _defaults_by_output = (
   concept: (
+    show-header: true,
     show-per-version: false,
     show-q-perm-table: true,
     show-q-list: true,
@@ -29,6 +30,7 @@
     show-key-table: false,
   ),
   exam: (
+    show-header: true,
     show-per-version: true,
     show-q-perm-table: false,
     show-q-list: true,
@@ -40,6 +42,7 @@
     show-key-table: false,
   ),
   answers: (
+    show-header: true,
     show-per-version: true,
     show-q-perm-table: false,
     show-q-list: true,
@@ -51,6 +54,7 @@
     show-key-table: false,
   ),
   key: (
+    show-header: true,
     show-per-version: false,
     show-q-perm-table: false,
     show-q-list: false,
@@ -370,27 +374,30 @@
 }
 
 #let _heading_for(output, version, cfg, style) = {
-  // Version heading based on output type
-  // Also insert metadata for file splitting
-
-  // Titles per output type
-  let titles = (
-    exam: "Version",
-    answers: "Answers — Version",
-    concept: "Concept",
-    key: "Answer Key",
-  )
-  let title_text = titles.at(output, default: "Version")
+  // Version heading based on configuration and output type.
+  // Also insert metadata at the beginning for file splitting
 
   // Metadata anchor for file splitting
-  [
-    #_insert_metadata(output, version)
-    #align(center)[
-      #heading(level: 1)[#title_text #{
-          if output == "exam" or output == "answers" [ #_fmt_v(version, style) ] else { "" }
-        } ]
+  insert_metadata(output, version)
+
+  if cfg.show-header {
+    // Titles per output type
+    let titles = (
+      exam: "Version",
+      answers: "Answers — Version",
+      concept: "Concept",
+      key: "Answer Key",
+    )
+    let title_text = titles.at(output, default: "Version")
+
+    [
+      #align(center)[
+        #heading(level: 1)[#title_text #{
+            if output == "exam" or output == "answers" [ #_fmt_v(version, style) ] else { "" }
+          } ]
+      ]
     ]
-  ]
+  }
 }
 
 #let _question_perm_table(
@@ -525,7 +532,6 @@
   let has_correct = questions.any(q => q.answers.any(a => a.mark == "correct"))
   let has_points = questions.any(q => q.answers.any(a => a.mark != none and a.mark != "correct"))
   if not has_correct and not has_points { return none }
-
 
   // Iterate over versions, building the answer key table
   // based on the projected display order and answer permutations.
