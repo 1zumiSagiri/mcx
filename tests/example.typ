@@ -307,9 +307,3 @@
   seed: seed,
   style: style,
 )
-
-// Note:
-// The above code generates multiple versions of an exam, answer key, concept explanations, and answer lists based on a set of multiple-choice questions.
-// The following command is a placeholder for the actual script that would be used to split the generated content into separate files or sections based on the metadata specified in the versions and output types.
-#pagebreak()
-#mc-gen-split-script(filename: "example.typ")

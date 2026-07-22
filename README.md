@@ -95,4 +95,10 @@ Import the package using
 #import "@preview/mcx:0.4.1": *
 ```
 
+When compileing your Typst document, make sure to include the `--features bundle --format bundle` option to generate multiple files:
+
+```bash
+typst compile --features bundle --format bundle your_document.typ
+```
+
 The full documentation is available in the [manual](https://github.com/1zumiSagiri/mcx/blob/v0.4.1/docs/manual.pdf).

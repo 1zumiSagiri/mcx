@@ -355,27 +355,8 @@
 // Rendering helpers
 // -------------------------
 
-/// Insert a hidden version marker into the PDF for Python splitting.
-/// - `output` (string): output type string, e.g., "exam", "answers".
-/// - `version` (number): integer version number.
-#let _insert_metadata(output, version) = {
-  place(top + left)[
-    #box(width: 0pt, height: 0pt)[
-      #text(
-        fill: white.transparentize(100%),
-        size: 0.1pt,
-        costs: (hyphenation: 0%),
-      )[#{ "<version_marker>_" + output + "_v" + str(version) }]
-    ]
-  ]
-}
-
 #let _heading_for(output, version, cfg, style) = {
   // Version heading based on configuration and output type.
-  // Also insert metadata at the beginning for file splitting
-
-  // Metadata anchor for file splitting
-  _insert_metadata(output, version)
 
   if style.show-header {
     // Titles per output type
@@ -716,77 +697,4 @@
   set par(leading: leading-val)
 
   body
-}
-
-/// Generate Python script for splitting compiled PDF into versions based on metadata markers.
-#let mc-gen-split-script(filename: "example.typ") = {
-  let script = (
-    "
-import subprocess, os, re
-
-try:
-    from pypdf import PdfReader, PdfWriter
-except ImportError:
-    print('Error: pypdf not found. Please run: pip install pypdf')
-    exit(1)
-
-def split_exam(typ_file):
-    pdf_file = typ_file.replace('.typ', '.pdf')
-    print(f'Querying metadata from {typ_file}...')
-
-    # Run typst query to get metadata markers
-    cmd = ['typst', 'query', typ_file, '<version_marker>']
-    result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8')
-
-    if result.returncode != 0:
-        print(f'Error: Typst query failed with exit code {result.returncode}')
-        print('-' * 20 + ' STDERR ' + '-' * 20)
-        print(result.stderr)
-        print('-' * 48)
-        return
-
-    reader = PdfReader(pdf_file)
-    total_pages = len(reader.pages)
-
-    marker_pages = []
-    pattern = re.compile(r'<version_marker>_([a-zA-Z]+)_v(\d+)')
-
-    for i, page in enumerate(reader.pages):
-        text = page.extract_text() or ''
-        for m in pattern.findall(text):
-            marker = f\"{m[0]}_v{m[1]}\"
-            if marker not in [mp[1] for mp in marker_pages]:
-                marker_pages.append((i, marker))
-
-    marker_pages.sort(key=lambda x: x[0])
-    print(f\"Found {len(marker_pages)} version markers in PDF.\")
-
-    if not os.path.exists('output'):
-        os.mkdir('output')
-
-    for idx, (start_page, marker) in enumerate(marker_pages):
-        marker = marker.replace(\"<version_marker>\", \"\").strip(\"_\")
-        end_page = marker_pages[idx + 1][0] if idx + 1 < len(marker_pages) else total_pages
-        writer = PdfWriter()
-        for p in range(start_page, end_page):
-            writer.add_page(reader.pages[p])
-        out_path = os.path.join(\"output\", f\"{marker}.pdf\")
-        with open(out_path, \"wb\") as f:
-            writer.write(f)
-        print(f\"Generated {out_path}\")
-
-if __name__ == '__main__':
-    split_exam('"
-      + filename
-      + "')
-"
-  )
-
-  block(breakable: false)[
-    #_insert_metadata("script", 1)
-    #heading(level: 1, "Automation Script")
-    Save the following code as `split.py` and run it after compiling your PDF:
-    #show raw: set par(justify: false)
-    #raw(script, lang: "python")
-  ]
 }

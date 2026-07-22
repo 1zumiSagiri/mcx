@@ -11,7 +11,7 @@ The `mcx` package is a Typst implementation inspired by the LaTeX package mcexam
 - *Flexible Shuffling:* Randomize question blocks (respecting connectivity logic) and answer choices.
 - *Multiple Output Modes:* Seamlessly switch between student exams, answer keys, solution manuals, and exam generation concept overviews.
 - *Automated Tables:* Generate question and answer permutation tables to track how content moved between versions.
-- *PDF Splitting:* Includes a helper script to automatically split a single compiled PDF into individual version files.
+- *PDF Splitting:* Use Typst's `--features bundle` option to split the output into multiple files.
 
 = Getting Started <getting-started>
 To get started with `mcx`, you can import the package into your Typst document:

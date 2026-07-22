@@ -37,11 +37,16 @@
   )
 )
 
-#mc-questions(qs, output: "exam", number-of-versions: 2, version: 1, seed: 6)
+// https://typst.app/docs/reference/bundle/
 
-#mc-questions(qs, output: "exam", number-of-versions: 2, version: 2, seed: 6)
+#document("exam1.pdf")[
+  #mc-questions(qs, output: "exam", number-of-versions: 2, version: 1, seed: 6)
+]
 
-#pagebreak()
-#mc-questions(qs, output: "key", number-of-versions: 2, seed: 6)
+#document("exam2.pdf")[
+  #mc-questions(qs, output: "exam", number-of-versions: 2, version: 2, seed: 5)
+]
 
-#mc-questions(qs, output: "concept", number-of-versions: 2, seed: 6)
+#document("exam3.pdf")[
+  #mc-questions(qs, output: "exam", number-of-versions: 2, version: 3, seed: 3)
+]
