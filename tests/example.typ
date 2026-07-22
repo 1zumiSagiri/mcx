@@ -1,4 +1,5 @@
-#import "@preview/mcx:0.4.0": *
+#import "@preview/mcx:0.4.1": *
+// #import "../src/lib.typ": *
 
 #let output = sys.inputs.at("output", default: "exam")
 #let num_vers = int(sys.inputs.at("number-of-versions", default: "4"))
@@ -6,6 +7,7 @@
 #let seed = int(sys.inputs.at("seed", default: "5"))
 
 #let style = (
+  show-header: true,
   font-size: 11pt,
   v-numbering: "1",
   line-spacing: 0.65em,

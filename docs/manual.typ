@@ -17,7 +17,7 @@ The `mcx` package is a Typst implementation inspired by the LaTeX package mcexam
 To get started with `mcx`, you can import the package into your Typst document:
 
 ```typst
-#import "@preview/mcx:0.4.0": *
+#import "@preview/mcx:0.4.1": *
 ```
 
 = Defining Question List <defining-questions>
@@ -60,7 +60,7 @@ The `mc-questions` function takes the question list and generates the specified 
   - `margin` (dictionary (string, length)): Page margin size (e.g., top : `1in`).
 - `config`: Provide a custom boolean dictionary configuration for the output mode.
   - `show-header`: Display the heading at the top of the generated output.
-  - `show-per-version`: Display the version number at the top of each generated exam version.
+  - `per-version-q-order`: Display the questions in the order they appear in each version or numerical order.
   - `show-q-perm-table`: Display the question permutation table.
   - `show-q-list`: Display the list of questions.
   - `show-correct`: Display the correct answers in the output.
@@ -139,6 +139,7 @@ In case you are interested in understanding the internal workings of the `mcx` p
   - Based on the selected `output` mode (such as `exam`, `answers`, or `concept`), the system determines whether to render correct answer markers, solution explanations, or point values.
 
 = Revision History <revision-history>
+- *v0.4.1*: Bug fix for `show-header` and `per-version-q-order`.
 - *v0.4.0*: Added `show-header` parameter to control the display of version headings.
 - *v0.3.0*: Added `q-breakable` and `a-breakable` parameters to allow questions and answers to break across pages.
 - *v0.2.1*: Improved input sanity checks when using custom styles and configurations in `mc-questions`; fix bugs related to title formatting and question labeling.

@@ -6,6 +6,7 @@
 
 // Default formatting style
 #let _default_style = (
+  show-header: true,
   font: "Libertinus Serif",
   font-size: 11pt,
   v-numbering: "I",
@@ -18,8 +19,7 @@
 // Default configuration per output type
 #let _defaults_by_output = (
   concept: (
-    show-header: true,
-    show-per-version: false,
+    per-version-q-order: false,
     show-q-perm-table: true,
     show-q-list: true,
     show-correct: true,
@@ -30,8 +30,7 @@
     show-key-table: false,
   ),
   exam: (
-    show-header: true,
-    show-per-version: true,
+    per-version-q-order: true,
     show-q-perm-table: false,
     show-q-list: true,
     show-correct: false,
@@ -42,8 +41,7 @@
     show-key-table: false,
   ),
   answers: (
-    show-header: true,
-    show-per-version: true,
+    per-version-q-order: true,
     show-q-perm-table: false,
     show-q-list: true,
     show-correct: true,
@@ -54,8 +52,7 @@
     show-key-table: false,
   ),
   key: (
-    show-header: true,
-    show-per-version: false,
+    per-version-q-order: false,
     show-q-perm-table: false,
     show-q-list: false,
     show-correct: false,
@@ -378,9 +375,9 @@
   // Also insert metadata at the beginning for file splitting
 
   // Metadata anchor for file splitting
-  insert_metadata(output, version)
+  _insert_metadata(output, version)
 
-  if cfg.show-header {
+  if style.show-header {
     // Titles per output type
     let titles = (
       exam: "Version",
@@ -609,7 +606,7 @@
   if not cfg.show-q-list { return none }
 
   // 1. Displayed order for this version
-  let q_order = if cfg.show-per-version { q_order_by_v.at(version - 1) } else { range(1, questions.len() + 1) }
+  let q_order = if cfg.per-version-q-order { q_order_by_v.at(version - 1) } else { range(1, questions.len() + 1) }
 
   // Build enum items and render a single question list.
   let items = q_order

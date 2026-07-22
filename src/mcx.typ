@@ -86,7 +86,7 @@
 ///   - `margin` (dictionary (string, length)): Page margin size (e.g., top : `1in`).
 /// - `config` : boolean dictionary overriding defaults (any of the cfg keys)
 ///   - `show-header`: Show heading at the top of output.
-///   - `show-per-version`: Show per-version question numbering.
+///   - `show-order-by-version`: Show questions in the order they appear in each version or numerical order.
 ///   - `show-q-perm-table`: Show question permutation table.
 ///   - `show-q-list`: Show question list.
 ///   - `show-correct`: Show correct answers.
@@ -121,7 +121,7 @@
     _question_perm_table(questions, number-of-versions, q_order_by_v, cfg, style),
     _question_list(
       questions,
-      if cfg.show-per-version { v } else { 1 },
+      if cfg.per-version-q-order { v } else { 1 },
       number-of-versions,
       q_order_by_v,
       answers_perm_by_v,
